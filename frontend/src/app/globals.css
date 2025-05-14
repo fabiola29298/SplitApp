@@ -112,6 +112,24 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+    /* ...otros colores base para el modo oscuro... */
+
+    --popover: 222.2 84% 4.9%;        /* Fondo del popover/dropdown en modo oscuro */
+    --popover-foreground: 210 40% 98%; /* Texto del popover/dropdown en modo oscuro */
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%; /* Usado para SelectLabel en oscuro */
+
+    --accent: 217.2 32.6% 17.5%;     /* Usado para el hover/focus de SelectItem en oscuro */
+    --accent-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    /* ... más variables ... */
+  
 }
 
 @layer base {
