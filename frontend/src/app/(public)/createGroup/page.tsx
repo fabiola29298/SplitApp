@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input" 
+import Link from 'next/link';
 import {
   Tabs,
   TabsContent,
@@ -66,7 +67,7 @@ export default function Page() {
 
                           </CardContent>
                           <CardFooter>
-                            <Button className="bg-white text-black">Save changes</Button>
+                            <Button className="bg-white text-black">Save</Button>
                           </CardFooter>
                         </Card>
                       </TabsContent>
@@ -93,7 +94,10 @@ export default function Page() {
                             <Button className="border-none bg-gray-600 text-white"> <CirclePlus /> Add new</Button>
                           </CardContent>
                           <CardFooter>
-                            <Button className="bg-white text-black">Save members</Button>
+                          <Link href={"/dashboard"}>
+                          <Button className="bg-white text-black">Save members</Button>
+                            </Link>
+                            
                           </CardFooter>
                         </Card>
                       </TabsContent>

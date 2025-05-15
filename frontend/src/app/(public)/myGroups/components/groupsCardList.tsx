@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { Users, ChevronRight  } from "lucide-react"; 
 import React from "react";
-
+import Link from 'next/link';
 // Define data for members
 const groups = [
     { name: "Downtown Apartment", people: "3" },
@@ -32,13 +32,16 @@ export default function GroupsCardList() {
                     </div>
                 </div>
                 <div className="flex gap-2">
-                    <Button
-                        variant="outline"
-                        className="rounded-full text-xs border bg-[#191D26] border-[#273345]"
-                    >
-                        More  
-                        <ChevronRight />
-                    </Button> 
+                <Link href={"/dashboard"}>
+                <Button
+                                variant="outline"
+                                className="rounded-full text-xs border bg-[#191D26] border-[#273345]"
+                            >
+                                More  
+                                <ChevronRight />
+                            </Button> 
+                </Link>
+                    
                 </div>
             </CardContent>
  

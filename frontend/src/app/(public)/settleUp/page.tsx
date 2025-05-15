@@ -4,7 +4,7 @@ import { ChevronRight, ChevronLeft, User, LockKeyhole  } from "lucide-react";
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
- 
+import Link from 'next/link';
 export default function SettleUpPage() {
     return (
         <div className="relative w-full min-h-screen overflow-hidden">
@@ -17,9 +17,12 @@ export default function SettleUpPage() {
                     <Card className="my-5 w-full bg-[#12131A] border border-solid border-[#273345] rounded-[24px] text-white ">
                         <CardHeader className="flex flex-row items-center justify-between border-b border-[#273345] px-8 py-0">
                             <div className="flex items-center gap-4">
+                                
+                                <Link href={"/dashboard"}>
                                 <div className="rounded-[6px] flex items-center justify-center">
-                                    <ChevronLeft className="w-10 h-10" />
-                                </div>
+                                            <ChevronLeft className="w-10 h-10" />
+                                        </div>
+                                    </Link>
                                 <CardTitle className="font-paragraph-regular-16-medium ">
                                 Settle up
                                 </CardTitle> 

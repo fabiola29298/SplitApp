@@ -1,7 +1,7 @@
 import React from "react"; 
 
 import { ChevronRight, ChevronLeft, LockKeyhole  } from "lucide-react";  
-
+import Link from 'next/link';
 import {
     Select,
     SelectContent,
@@ -29,7 +29,10 @@ export default function CreateExpensePage() {
                         <CardHeader className="flex flex-row items-center justify-between border-b border-[#273345] px-8 py-0">
                             <div className="flex items-center gap-4">
                                 <div className="rounded-[6px] flex items-center justify-center">
+                                    <Link href={"/dashboard"}>
                                     <ChevronLeft className="w-10 h-10" />
+                                    </Link>
+                                    
                                 </div>
                                 <CardTitle className="font-paragraph-regular-16-medium ">
                                 Add an expense

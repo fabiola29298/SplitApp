@@ -5,7 +5,7 @@ import {
   } from "@/components/ui/navigation-menu"
   import { Button } from "@/components/ui/button";
 import { Background } from "@/components/ui/background";
-
+import Link from 'next/link';
 export default function GeneralLayout({
  children
 }: {
@@ -20,7 +20,10 @@ export default function GeneralLayout({
     <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-             <span className="font-bold text-[#43a047] text-2xl">Splitter Dapp</span>
+            <Link href={"/myGroups"}>
+            <span className="font-bold text-[#43a047] text-2xl">Splitter Dapp</span>
+            </Link>
+             
            
           </NavigationMenuItem>
           <NavigationMenuItem>

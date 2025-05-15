@@ -1,5 +1,5 @@
 import React from "react";
-
+import Link from 'next/link';
 import DetailsCard from "./components/detailsCard";
 
 import { Card } from "@/components/ui/card";
@@ -21,9 +21,12 @@ export default function LoginPage() {
                             Keep track of your shared expenses and balances with housemates,
                             trips, groups, friends, and family.
                         </p>
+                        
+                        <Link href={"/createGroup"}>
                         <Button className="bg-[#43a047] text-white hover:bg-[#3b8f3f]">
-                            Select Wallet
-                        </Button>
+                                Select Wallet
+                            </Button>
+                        </Link>
                     </div>
 
                     {/* Details section */}
