@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import React from "react";
 import GroupsCardList from "./components/groupsCardList"; 
 import Link from 'next/link';
-
+import { CircleUserRound  } from "lucide-react"; 
 
 function LoadingComponent() {
     return <p className="text-white">Cargando datos del usuario y rol...</p>;
@@ -62,9 +62,14 @@ export default function MyGroupsPage() {
                         {/* Main content */}
                         <main className="w-full max-w-[824px] bg-[#00000040]/70 border-none rounded-[26px] overflow-hidden p-10 ">
                             {/* Card */}
-                            <div className='p-5 text-white'>
-                            <p  >Welcome {user?.wallet?.address} </p>
-                            <button onClick={handleLogout}>Logout</button>
+                            <div className="p-5 text-white">
+                                <h3 className="text-xl pb-4">Welcome!</h3>
+                                <div className="flex items-center pb-4">
+                                    <CircleUserRound/>
+                                    <p className=" text-xs pl-4 " > {user?.wallet?.address} </p>
+                                </div>
+                                
+                            <button onClick={handleLogout} className="cursor-pointer"> <p className="underline decoration-1"> Logout</p>  </button>
                 
                             </div>
                             <div className="flex justify-between">
