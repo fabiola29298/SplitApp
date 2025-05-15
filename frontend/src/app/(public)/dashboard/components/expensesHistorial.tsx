@@ -9,8 +9,10 @@ import {
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import React from "react"; 
+import { ChevronLeft, ChevronRight, User, HandCoins } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Link from 'next/link';  
+import React from "react";
 // Define data for expenses
 const expenses = [
     {
@@ -54,9 +56,12 @@ export default function ExpensesHistorial() {
                         </div>
                         <div className="w-[124px] text-xs font-paragraph-extra-small-12-medium text-[color:var(--01-tokens-text-tertiary)]">
                             Date
+                        </div> 
+                        <div className="w-[124px] text-xs font-paragraph-extra-small-12-medium text-[color:var(--01-tokens-text-tertiary)]">
+                            Status
                         </div>
                         <div className="w-[124px] text-xs font-paragraph-extra-small-12-medium text-[color:var(--01-tokens-text-tertiary)]">
-                            Who
+                            Pay
                         </div>
                     </div>
                 </div>
@@ -77,10 +82,7 @@ export default function ExpensesHistorial() {
                                                 ? "bg-[#f5ac37]"
                                                 : "bg-[#627eea]"
                                         }`}
-                                    >
-                                        <div className="w-[17px] h-[17px]">
-                                            {/** Imagen aca */}
-                                        </div>
+                                    > 
                                     </div>
                                     <span className="font-paragraph-extra-small-12-medium text-01-tokens-text-primary">
                                         {expense.description}
@@ -94,16 +96,23 @@ export default function ExpensesHistorial() {
                                     </div>
                                     <div className="w-[124px] font-paragraph-extra-small-12-regular text-01-tokens-text-primary">
                                         {expense.date}
-                                    </div>
-                                    <div className="w-[124px] font-paragraph-extra-small-12-regular text-01-tokens-text-primary">
-                                        {expense.who}
-                                    </div>
+                                    </div> 
                                     <Badge
                                         variant="secondary"
                                         className="bg-[color:var(--01-tokens-components-badge-neutral-background)] text-[color:var(--01-tokens-components-badge-neutral-foreground)]"
                                     >
                                         {expense.status}
                                     </Badge>
+                                    <div>
+                                    <Link href={"/settleUp"}>
+                                        <Button
+                                                variant="outline"
+                                                className="rounded-full text-xs border border-[color:var(--01-tokens-components-button-secondary-border)] bg-01-tokens-components-button-secondary-background"
+                                            >
+                                                    <HandCoins/>  Pay
+                                                </Button>
+                                        </Link>
+                                    </div>
                                 </div>
                             </TableCell>
                         </TableRow>
@@ -124,7 +133,7 @@ export default function ExpensesHistorial() {
                             </PaginationPrevious>
                         </PaginationItem>
                         <PaginationItem>
-                            <span className="text-xs text-white">Page 1 of 6</span>
+                            <span className="text-xs text-white">Page 1 of 1</span>
                         </PaginationItem>
                         <PaginationItem>
                             <PaginationNext
