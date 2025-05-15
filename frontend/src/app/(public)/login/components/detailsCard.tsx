@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 
-import AuthButtons from "@/components/ui/AuthButton";
+import MyGroupAuthButtons from "@/components/ui/myGroupAuthButtons";
 import {
     Card,
     CardContent,
@@ -73,7 +73,7 @@ export default function DetailsCard() {
             </div>
 
             <div className="flex justify-center mt-8">
-            <AuthButtons />
+            <MyGroupAuthButtons />
             </div>
         </CardContent>
     </Card>

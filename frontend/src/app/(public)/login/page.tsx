@@ -3,7 +3,7 @@ import React from "react";
 
 import DetailsCard from "./components/detailsCard";
 import { Card } from "@/components/ui/card"; 
-import AuthButtons from "@/components/ui/AuthButton";
+import MyGroupAuthButtons from "@/components/ui/myGroupAuthButtons";
 
 export default function LoginPage() {
 
@@ -22,7 +22,7 @@ export default function LoginPage() {
                             trips, groups, friends, and family.
                         </p>
                         
-                        <AuthButtons />
+                        <MyGroupAuthButtons />
                     </div>
 
                     {/* Details section */}
