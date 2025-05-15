@@ -1,9 +1,9 @@
-import React from "react";
-import Link from 'next/link';
-import DetailsCard from "./components/detailsCard";
+import React from "react";  
 
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button"; 
+
+import DetailsCard from "./components/detailsCard";
+import { Card } from "@/components/ui/card"; 
+import AuthButtons from "@/components/ui/AuthButton";
 
 export default function LoginPage() {
 
@@ -22,11 +22,7 @@ export default function LoginPage() {
                             trips, groups, friends, and family.
                         </p>
                         
-                        <Link href={"/createGroup"}>
-                        <Button className="bg-[#43a047] text-white hover:bg-[#3b8f3f]">
-                                Select Wallet
-                            </Button>
-                        </Link>
+                        <AuthButtons />
                     </div>
 
                     {/* Details section */}

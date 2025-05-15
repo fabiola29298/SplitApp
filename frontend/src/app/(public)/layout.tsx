@@ -2,10 +2,10 @@ import {
     NavigationMenu, 
     NavigationMenuItem, 
     NavigationMenuList, 
-  } from "@/components/ui/navigation-menu"
-  import { Button } from "@/components/ui/button";
+  } from "@/components/ui/navigation-menu" 
 import { Background } from "@/components/ui/background";
 import Link from 'next/link';
+import AuthButtons from "@/components/ui/AuthButton";
 export default function GeneralLayout({
  children
 }: {
@@ -27,9 +27,9 @@ export default function GeneralLayout({
            
           </NavigationMenuItem>
           <NavigationMenuItem>
-          <Button className="bg-[#43a047] text-white hover:bg-[#3b8f3f]">
-                Select Wallet
-            </Button>
+           
+            <AuthButtons />
+
            
           </NavigationMenuItem>
         </NavigationMenuList>

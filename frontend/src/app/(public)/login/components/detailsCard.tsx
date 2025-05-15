@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import Link from 'next/link';
+
+import AuthButtons from "@/components/ui/AuthButton";
 import {
     Card,
     CardContent,
@@ -73,11 +73,7 @@ export default function DetailsCard() {
             </div>
 
             <div className="flex justify-center mt-8">
-            <Link href={"/createGroup"}>
-                <Button className="bg-[#43a047] text-white hover:bg-[#3b8f3f]">
-                        Select Wallet
-                    </Button>
-                </Link>
+            <AuthButtons />
             </div>
         </CardContent>
     </Card>
