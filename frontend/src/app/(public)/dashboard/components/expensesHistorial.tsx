@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/pagination";
 import { Separator } from "@/components/ui/separator";
 import { Table, TableBody, TableCell, TableRow } from "@/components/ui/table";
-import { ChevronLeft, ChevronRight, User, HandCoins } from "lucide-react";
+import { ChevronLeft, ChevronRight, HandCoins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from 'next/link';  
 import React from "react";
