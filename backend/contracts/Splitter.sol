@@ -98,28 +98,36 @@ contract Splitter is Ownable {
     function createGroup(string memory _name, address[] memory _initialMembers) external {
         require(bytes(_name).length > 0, "Splitter: Group name cannot be empty");
         require(_initialMembers.length > 0, "Splitter: Group must have at least one member");
+ 
+        uint256 currentGroupId = nextGroupId;
+        Group storage newGroup = groups[currentGroupId];
 
-        bool creatorIncluded = false;
-        for (uint i = 0; i < _initialMembers.length; i++) {
-            require(_initialMembers[i] != address(0), "Splitter: Invalid member address");
-            if (_initialMembers[i] == msg.sender) {
-                creatorIncluded = true;
-            } 
+        newGroup.id = currentGroupId;
+        newGroup.name = _name;
+        newGroup.creator = msg.sender;
+        newGroup.isActive = true;
+
+        // Adding msg.sender
+        if (msg.sender != address(0)) {
+            newGroup.members.push(msg.sender);
+        } else {
+            revert("Splitter: El creador (msg.sender) es una direccion invalida.");
         }
-        require(creatorIncluded, "Splitter: Creator (msg.sender) must be in initial members list");
-
-        uint256 groupId = nextGroupId;
-        groups[groupId] = Group({
-            id: groupId,
-            name: _name,
-            creator: msg.sender,
-            members: _initialMembers,
-            isActive: true,
-            expenseIds: new uint256[](0)
-        });
-
+        // Adding _initialMembers
+        for (uint i = 0; i < _initialMembers.length; i++) {
+            address member = _initialMembers[i];
+            newGroup.members.push(member); 
+        } 
+         
         nextGroupId++;
-        emit GroupCreated(groupId, _name, msg.sender, _initialMembers);
+        
+        emit GroupCreated(
+            currentGroupId,
+            newGroup.name,
+            newGroup.creator,
+            newGroup.members  
+        );
+        
     }
 
     /**
@@ -130,22 +138,11 @@ contract Splitter is Ownable {
      * @param _description Description of the expense.
      */
     function addExpense(uint256 _groupId, uint256 _totalAmount, string memory _description) external {
-        Group storage group = groups[_groupId]; // Use 'storage' to modify it
-        require(group.id == _groupId && group.creator != address(0), "Splitter: Group does not exist");
-        require(group.isActive, "Splitter: Group is not active");
-        require(_totalAmount > 0, "Splitter: Amount must be greater than zero");
-        require(bytes(_description).length > 0, "Splitter: Description cannot be empty");
-
-        bool isPayerMember = false;
-        for (uint i = 0; i < group.members.length; i++) {
-            if (group.members[i] == msg.sender) {
-                isPayerMember = true;
-                break;
-            }
-        }
-        require(isPayerMember, "Splitter: Payer is not a member of the group");
+        Group storage group = groups[_groupId]; 
 
         uint256 expenseId = nextExpenseId;
+
+        // Create a expense
         expenses[expenseId] = Expense({
             id: expenseId,
             groupId: _groupId,
@@ -154,41 +151,52 @@ contract Splitter is Ownable {
             description: _description,
             timestamp: block.timestamp
         });
-        group.expenseIds.push(expenseId);  
+
+        group.expenseIds.push(expenseId);
 
         uint256 numMembers = group.members.length;
-        require(numMembers > 0, "Splitter: Group has no members to split with");
-
         uint256 sharePerMember = 0;
-        if (numMembers > 0) { // Avoid division by zero 
+
+        // protección de tiempo de ejecución. Si numMembers es 0, _totalAmount / 0 revertiría.
+        if (numMembers > 0) {
             sharePerMember = _totalAmount / numMembers;
         }
+        // Si numMembers es 0, sharePerMember seguirá siendo 0.
 
-        // For the event, collect the debtors
-        address[] memory debtorsArray = new address[](numMembers > 0 ? numMembers - 1 : 0);
-        uint debtorsCount = 0;
+        
+        address[] memory debtorsForEvent;
 
-        if (sharePerMember > 0) {
+        if (numMembers > 1 && sharePerMember > 0) {
+            debtorsForEvent = new address[](numMembers - 1); // Asume que el pagador es uno de los miembros.
+            uint debtorsCount = 0;
             for (uint i = 0; i < numMembers; i++) {
                 address member = group.members[i];
-                if (member != msg.sender) { // Payer does not owe themselves
+                if (member != msg.sender) {
                     debts[_groupId][member][msg.sender] += sharePerMember;
-                    if(debtorsCount < debtorsArray.length){ // Safety check
-                         debtorsArray[debtorsCount] = member;
-                         debtorsCount++;
+                    if (debtorsCount < debtorsForEvent.length) { 
+                        debtorsForEvent[debtorsCount] = member;
                     }
+                    debtorsCount++; 
+                                   
                 }
             }
+            
+            if (debtorsCount < debtorsForEvent.length) {
+                address[] memory actualDebtors = new address[](debtorsCount);
+                for(uint j=0; j < debtorsCount; j++){
+                    actualDebtors[j] = debtorsForEvent[j];
+                }
+                debtorsForEvent = actualDebtors;
+            }
+
+        } else {
+            
+            debtorsForEvent = new address[](0);
         }
 
-         
-        address[] memory finalDebtorsArray = new address[](debtorsCount);
-        for(uint j=0; j < debtorsCount; j++){
-            finalDebtorsArray[j] = debtorsArray[j];
-        }
 
         nextExpenseId++;
-        emit ExpenseAdded(expenseId, _groupId, msg.sender, _totalAmount, _description, finalDebtorsArray);
+        emit ExpenseAdded(expenseId, _groupId, msg.sender, _totalAmount, _description, debtorsForEvent);
     }
 
     /**
@@ -199,8 +207,6 @@ contract Splitter is Ownable {
      */
     function payDebt(uint256 _groupId, address _creditor) external payable { // Mark as payable
         require(groups[_groupId].id == _groupId && groups[_groupId].creator != address(0), "Splitter: Group does not exist");
-        require(groups[_groupId].isActive, "Splitter: Group is not active");
-        require(msg.value > 0, "Splitter: Amount to pay (msg.value) must be greater than zero");
 
         uint256 amountToPay = msg.value; // The amount sent with the transaction
         uint256 currentDebt = debts[_groupId][msg.sender][_creditor];
@@ -212,108 +218,5 @@ contract Splitter is Ownable {
 
         emit DebtPaid(_groupId, msg.sender, _creditor, amountToPay);
     }
-
-    // --- View Functions ---
-
-    function getGroupDetails(uint256 _groupId) external view returns (Group memory) {
-        require(groups[_groupId].id == _groupId && groups[_groupId].creator != address(0), "Splitter: Group does not exist");
-        return groups[_groupId];
-    }
-
-    function getExpenseDetails(uint256 _expenseId) external view returns (Expense memory) {
-        require(expenses[_expenseId].id == _expenseId && expenses[_expenseId].payer != address(0) , "Splitter: Expense does not exist");
-        return expenses[_expenseId];
-    }
-
-    function getDebt(uint256 _groupId, address _debtor, address _creditor) external view returns (uint256) {
-        return debts[_groupId][_debtor][_creditor];
-    }
-
-    /**
-     * @dev Retrieves all debts a user owes within a specific group.
-     * @param _groupId ID of the group.
-     * @param _debtor Address of the user whose debts are being queried.
-     * @return creditors Array of addresses the _debtor owes to.
-     * @return amounts Array of corresponding debt amounts.
-     */
-    function getMyOwedDebtsInGroup(uint256 _groupId, address _debtor)
-        external
-        view
-        returns (address[] memory creditors, uint256[] memory amounts)
-    {
-        Group storage group = groups[_groupId];
-        require(group.id == _groupId && group.creator != address(0), "Splitter: Group does not exist");
-
-        uint count = 0;
-        for (uint i = 0; i < group.members.length; i++) {
-            if (group.members[i] != _debtor && debts[_groupId][_debtor][group.members[i]] > 0) {
-                count++;
-            }
-        }
-
-        creditors = new address[](count);
-        amounts = new uint256[](count);
-        uint k = 0;
-        for (uint i = 0; i < group.members.length; i++) {
-            address potentialCreditor = group.members[i];
-            if (potentialCreditor != _debtor) {
-                uint256 debtAmount = debts[_groupId][_debtor][potentialCreditor];
-                if (debtAmount > 0) {
-                    creditors[k] = potentialCreditor;
-                    amounts[k] = debtAmount;
-                    k++;
-                }
-            }
-        }
-        return (creditors, amounts);
-    }
-
-    /**
-     * @dev Retrieves all amounts owed to a user within a specific group.
-     * @param _groupId ID of the group.
-     * @param _creditor Address of the user whose credits are being queried.
-     * @return debtors Array of addresses that owe the _creditor.
-     * @return amounts Array of corresponding amounts owed.
-     */
-    function getMyCreditDebtsInGroup(uint256 _groupId, address _creditor)
-        external
-        view
-        returns (address[] memory debtors, uint256[] memory amounts)
-    {
-        Group storage group = groups[_groupId];
-        require(group.id == _groupId && group.creator != address(0), "Splitter: Group does not exist");
-
-        uint count = 0;
-        for (uint i = 0; i < group.members.length; i++) {
-            if (group.members[i] != _creditor && debts[_groupId][group.members[i]][_creditor] > 0) {
-                count++;
-            }
-        }
-
-        debtors = new address[](count);
-        amounts = new uint256[](count);
-        uint k = 0;
-        for (uint i = 0; i < group.members.length; i++) {
-            address potentialDebtor = group.members[i];
-            if (potentialDebtor != _creditor) {
-                uint256 debtAmount = debts[_groupId][potentialDebtor][_creditor];
-                if (debtAmount > 0) {
-                    debtors[k] = potentialDebtor;
-                    amounts[k] = debtAmount;
-                    k++;
-                }
-            }
-        }
-        return (debtors, amounts);
-    }
-
-    // --- Owner-Only Functions ---
-    // (Example: a function to withdraw any MNT accidentally sent to the contract directly)
-    // This is generally good practice for payable contracts.
-    /**
-     * @dev Allows the owner to withdraw any MNT balance accidentally sent to this contract.
-     */
-    function withdrawAccidentalMNT() external onlyOwner {
-        payable(owner()).transfer(address(this).balance);
-    }
+ 
 }
