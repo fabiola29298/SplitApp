@@ -6,9 +6,9 @@ import React from "react";
 import Link from 'next/link';
 // Define data for members
 const members = [
-    { name: "You", address: "0x0000" },
-    { name: "Camila", address: "0x0000" },
-    { name: "Camila", address: "0x0000" },
+    { name: "You", address: "0x8F85B6eC0C671B39871c03ACe99712b9e403204B" },
+    { name: "Camila", address: "0x7496E003D30D861A8922AFfDDd98Ca0FF2a04A5a" },
+    { name: "Camila", address: "0xF94a41193938Ab56b17697B1A7D76F8668f3C65C" },
 ];
 
  
@@ -31,7 +31,7 @@ export default function GroupDetails() {
                             
                             <CardTitle className="font-paragraph-regular-16-medium ">
                             <span className="text-xs text-gray-400 font-normal">Group Name</span><br/> 
-                            Downtown Apartment1
+                            Cousin Crew
                             </CardTitle>
                         </div>
                     </Link>

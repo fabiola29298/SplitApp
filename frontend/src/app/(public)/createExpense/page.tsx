@@ -15,6 +15,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import AddExpenseForm from "./AddExpenseForm";
  
 export default function CreateExpensePage() {
     return (
@@ -24,6 +25,7 @@ export default function CreateExpensePage() {
 
                 {/* Main content */}
                 <main className="w-full max-w-[524px] bg-[#00000040]/70 border-none rounded-[26px] overflow-hidden p-10 ">
+                    <AddExpenseForm/>
                     {/* Expense Card */}
                     <Card className="my-5 w-full bg-[#12131A] border border-solid border-[#273345] rounded-[24px] text-white ">
                         <CardHeader className="flex flex-row items-center justify-between border-b border-[#273345] px-8 py-0">
