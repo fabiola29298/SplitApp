@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import React, { useEffect, useState } from "react";
 import { getAllExistingGroups, type GroupDetailsFromContract } from '@/lib/services/myGroups'; 
+import NebulaChat from "./NebulaChat";
 
  
 
@@ -106,6 +107,7 @@ export default function GroupsCardList() {
  
         </Card></div>
         ))}
+        <NebulaChat/>
     </div>
     )
 }
