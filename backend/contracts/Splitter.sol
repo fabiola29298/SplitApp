@@ -3,11 +3,14 @@ pragma solidity ^0.8.19;
  
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+import "@openzeppelin/contracts/utils/structs/EnumerableSet.sol";
 /**
  * @title Splitter
  * @dev A smart contract for splitting expenses among a group of friends. 
  */
 contract Splitter is Ownable {
+
+    using EnumerableSet for EnumerableSet.UintSet;
 
     // --- State Variables ---
     uint256 public nextGroupId;
@@ -50,6 +53,12 @@ contract Splitter is Ownable {
         string description;
         uint256 timestamp;
     }
+    struct DebtItem { // Helper struct for returning debt information
+        uint256 groupId;
+        address debtor;
+        address creditor;
+        uint256 amount;
+    }
 
     // --- Mappings ---
     mapping(uint256 => Group) public groups;
@@ -57,6 +66,8 @@ contract Splitter is Ownable {
  
     mapping(uint256 => mapping(address => mapping(address => uint256))) public debts;
 
+    mapping(address => EnumerableSet.UintSet) private _userExpenseIds; // IDs of expenses paid by a user
+    mapping(address => EnumerableSet.UintSet) private _userGroupIds; // IDs of groups a user belongs to
     // --- Events ---
     event GroupCreated(
         uint256 indexed groupId,
@@ -153,6 +164,8 @@ contract Splitter is Ownable {
         });
 
         group.expenseIds.push(expenseId);
+        _userExpenseIds[msg.sender].add(expenseId);
+
 
         uint256 numMembers = group.members.length;
         uint256 sharePerMember = 0;
@@ -218,5 +231,17 @@ contract Splitter is Ownable {
 
         emit DebtPaid(_groupId, msg.sender, _creditor, amountToPay);
     }
+    function getExpenseIdsByPayer(address _payer) external view returns (uint256[] memory) {
+        return _userExpenseIds[_payer].values();
+    }
+    function getExpensesByPayer(address _payer) external view returns (Expense[] memory) {
+        uint256[] memory expenseIds = _userExpenseIds[_payer].values();
+        Expense[] memory userExpenses = new Expense[](expenseIds.length);
+        for (uint i = 0; i < expenseIds.length; i++) {
+            userExpenses[i] = expenses[expenseIds[i]];
+        }
+        return userExpenses;
+    }    
+    
  
 }
