@@ -25,6 +25,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwind-merge": "^3.3.0",
+    "thirdweb": "^5.99.2",
     "viem": "^2.29.2"
   },
   "devDependencies": {
